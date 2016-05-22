@@ -2,9 +2,9 @@ package ru.sber.ownstudy;
 
 import java.io.Serializable;
 
-public class  testClass1 implements Serializable{
-    String name;
-    String surname;
+public class  Profile implements Serializable{
+     String name;
+     String surname;
 
     public String getName() {
         return name;
