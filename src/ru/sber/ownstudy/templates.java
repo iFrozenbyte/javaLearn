@@ -139,6 +139,106 @@ public static void main(String[] args) {
         else
             System.out.println("Вы ввели " + str);
     }
+    ****************************************************************************************************************************************    
+    ПОТОКИ
+    public class Main {
+    
+    private static ArrayList<Profile> profiles = new ArrayList<Profile>();
+    static String fileName = null;
+    
+    @SuppressWarnings ("unchecked")
+    public static void main(String[] args){
+        fileName = JOptionPane.showInputDialog(null, "input File Name");
+        profiles = (ArrayList<Profile>) deSerData(fileName);
+        System.out.println("Before size is  " + profiles.size());
+         Profile zProfile = new Profile();
+         zProfile.setName(JOptionPane.showInputDialog(null, "input your name"));
+         zProfile.setSurname(JOptionPane.showInputDialog(null, "input your surname"));
+         profiles.add(zProfile);
+         
+         
+         for (Profile p: profiles){
+             System.out.println(p.getName()+"  "+p.getSurname());
+         }         
+         System.out.println("After size is  " + profiles.size());
+         serData(fileName, profiles);
+    }
+
+    private static Object deSerData(String file_name) {
+        Object returnObj = null;
+        
+        try {
+            FileInputStream fileIn = new FileInputStream(file_name + ".ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            returnObj = in.readObject();
+            fileIn.close();
+            in.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("FileNotFound");
+            System.exit(1);
+        } catch (IOException ex) {
+            System.out.println("IOException");
+            System.exit(2);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException");
+        }
+            
+        return returnObj;
+    }
+
+    private static void serData(String file_name, Object obj) {        
+        try {
+            // Создали поток для файла
+            FileOutputStream fileOut = new FileOutputStream(file_name + ".ser");
+            
+            // Создали поток для объекта
+            ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
+            
+            // После создания потоков в них нужно что_то записать
+            objOut.writeObject(obj);
+            
+            // Закрываем потоки
+            fileOut.close();
+            objOut.close();
+            
+        } catch (FileNotFoundException ex) {
+            System.out.println("FileNotFound");
+            System.exit(1);
+        } catch (IOException ex) {
+            System.out.println("IO error");
+            System.exit(2);
+        }           
+    }    
+}
+   ****************************************************************************************************************************************       
+   СИНХРОНИЗИРОВАННЫЕ ПОТОКИ 
+    public class Main {
+    private static int num;
+    
+    public static void main(String[] args){
+        Thread t1 = new Thread(new Profile());
+        Thread t2 = new Thread(new Profile());
+        Thread t3 = new Thread(new Profile());
+        t1.start();
+        t2.start();
+        t3.start();
+        
+        try {
+            t1.join();
+            t2.join();
+            t3.join();
+        } catch (InterruptedException ex) {
+            System.out.println("InterruptedException");
+        }
+        System.out.println(num);
+    }
+    
+    public static synchronized void increase(){
+        num++;
+    }
+}
+ ****************************************************************************************************************************************       
+    
     */
 
 }

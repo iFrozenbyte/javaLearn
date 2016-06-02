@@ -1,80 +1,63 @@
 package ru.sber.ownstudy;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.awt.image.BufferedImage; 
+import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.*;
+import javax.imageio.ImageIO;
 
 public class Main {
+    private static MainWindow mainWindow;
+    private static BufferedImage image;
     
-    private static ArrayList<Profile> profiles = new ArrayList<Profile>();
-    
-    @SuppressWarnings ("unchecked")
-    public static void main(String[] args){
-        profiles = (ArrayList<Profile>) deSerData("profiles");
-        System.out.println("Be4 " + profiles.size());
-         Profile zProfile = new Profile();
-         zProfile.setName(JOptionPane.showInputDialog(null, "input your name"));
-         zProfile.setSurname(JOptionPane.showInputDialog(null, "input your surname"));
-         profiles.add(zProfile);
-         
-         for (Profile p: profiles){
-             System.out.println(p.getName()+"  "+p.getSurname());
-         }         
-         System.out.println("After " + profiles.size());
-         serData("profiles", profiles);
+    public static void main(String[] args) {
+        mainWindow = new MainWindow(640, 480);
     }
-
-    private static Object deSerData(String file_name) {
-        Object returnObj = null;
-        
+    
+    public static void setImage(URL url){
         try {
-            FileInputStream fileIn = new FileInputStream(file_name + ".ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            returnObj = in.readObject();
-            fileIn.close();
-            in.close();
-        } catch (FileNotFoundException ex) {
-            System.out.println("FileNotFound");
-            System.exit(1);
+            ImageIO.read(url);
         } catch (IOException ex) {
             System.out.println("IOException");
-            System.exit(2);
-        } catch (ClassNotFoundException ex) {
-            System.out.println("ClassNotFoundException");
         }
-            
-        return returnObj;
+    }
+    
+    // Перегружаем метод setImage
+    public static void setImage(File file){
+        try {
+            ImageIO.read(file);
+        } catch (IOException ex) {
+            System.out.println("IOException FILE");
+        }
+    }
+    
+    public static void saveImage(File file, String format){
+        try {
+            ImageIO.write(image, format, file);
+        } catch (IOException ex) {
+            System.out.println("IOException SAVE_IMAGE");
+        }
+    }
+    
+    
+    
+    
+    // Геттеры / Сеттеры
+    public static MainWindow getMainWindow() {
+        return mainWindow;
     }
 
-    private static void serData(String file_name, Object obj) {        
-        try {
-            // Создали поток для файла
-            FileOutputStream fileOut = new FileOutputStream(file_name + ".ser");
-            
-            // Создали поток для объекта
-            ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
-            
-            // После создания потоков в них нужно что_то записать
-            objOut.writeObject(obj);
-            
-            // Закрываем потоки
-            fileOut.close();
-            objOut.close();
-            
-        } catch (FileNotFoundException ex) {
-            System.out.println("FileNotFound");
-            System.exit(1);
-        } catch (IOException ex) {
-            System.out.println("IO error");
-            System.exit(2);
-        }
-           
+    public static void setMainWindow(MainWindow mainWindow) {
+        Main.mainWindow = mainWindow;
+    }
+
+    public static BufferedImage getImage() {
+        return image;
+    }
+
+    public static void setImage(BufferedImage image) {
+        Main.image = image;
     }    
 }
