@@ -13,7 +13,7 @@ public class Main {
     private static BufferedImage image;
     
     public static void main(String[] args) {
-        mainWindow = new MainWindow(640, 480);
+        mainWindow = new MainWindow();
     }
     
     public static void setImage(URL url){
